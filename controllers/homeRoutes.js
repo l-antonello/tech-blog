@@ -3,6 +3,7 @@ const { Project, User } = require('../models');
 const withAuth = require('../utils/auth');
 const raceTheTurtle = require('../utils/randomRaceTurtle');
 
+// Home page route
 router.get('/', async (req, res) => {
   try {
     // Get all projects and JOIN with user data
@@ -18,18 +19,20 @@ router.get('/', async (req, res) => {
     // Serialize data so the template can read it
     const projects = projectData.map((project) => project.get({ plain: true }));
 
-    // Pass serialized data and session flag into template
-    res.render('homepage', { 
-      projects, 
-      logged_in: req.session.logged_in 
+    // Render homepage template with projects data and login status
+    res.render('homepage', {
+      projects,
+      logged_in: req.session.logged_in,
     });
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
+// Specific project route
 router.get('/project/:id', async (req, res) => {
   try {
+    // Find a specific project by ID and include user data
     const projectData = await Project.findByPk(req.params.id, {
       include: [
         {
@@ -39,51 +42,56 @@ router.get('/project/:id', async (req, res) => {
       ],
     });
 
+    // Serialize project data for rendering
     const project = projectData.get({ plain: true });
 
+    // Render project template with project data and login status
     res.render('project', {
       ...project,
-      logged_in: req.session.logged_in
+      logged_in: req.session.logged_in,
     });
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-// Use withAuth middleware to prevent access to route
+// Profile route (requires authentication)
 router.get('/profile', withAuth, async (req, res) => {
   try {
-    // Find the logged in user based on the session ID
+    // Find the logged-in user's data including associated projects
     const userData = await User.findByPk(req.session.user_id, {
       attributes: { exclude: ['password'] },
       include: [{ model: Project }],
     });
 
+    // Serialize user data for rendering
     const user = userData.get({ plain: true });
 
+    // Render profile template with user data and login status
     res.render('profile', {
       ...user,
-      logged_in: true
+      logged_in: true,
     });
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
+// Login page route
 router.get('/login', (req, res) => {
-  // If the user is already logged in, redirect the request to another route
+  // Redirect to profile if already logged in
   if (req.session.logged_in) {
     res.redirect('/profile');
     return;
   }
 
+  // Render login template
   res.render('login');
 });
 
-
+// Race the Turtle route
 router.get('/race-turtle', raceTheTurtle, (req, res) => {
-  console.log(req.turtle);
-  // res.json(req.turtle);
+  // Render turtle template with race data
   res.render("turtle", req.turtle);
 });
 
