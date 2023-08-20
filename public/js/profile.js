@@ -6,18 +6,22 @@ const newFormHandler = async (event) => {
   const description = document.querySelector('#project-desc').value.trim();
 
   if (name && needed_funding && description) {
-    const response = await fetch(`/api/projects`, {
-      method: 'POST',
-      body: JSON.stringify({ name, needed_funding, description }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      const response = await fetch(`/api/projects`, {
+        method: 'POST',
+        body: JSON.stringify({ name, needed_funding, description }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (response.ok) {
-      document.location.replace('/profile');
-    } else {
-      alert('Failed to create project');
+      if (response.ok) {
+        document.location.replace('/profile');
+      } else {
+        alert('Failed to create project. Please try again.');
+      }
+    } catch (err) {
+      console.error('An error occurred:', err);
     }
   }
 };
@@ -26,14 +30,18 @@ const delButtonHandler = async (event) => {
   if (event.target.hasAttribute('data-id')) {
     const id = event.target.getAttribute('data-id');
 
-    const response = await fetch(`/api/projects/${id}`, {
-      method: 'DELETE',
-    });
+    try {
+      const response = await fetch(`/api/projects/${id}`, {
+        method: 'DELETE',
+      });
 
-    if (response.ok) {
-      document.location.replace('/profile');
-    } else {
-      alert('Failed to delete project');
+      if (response.ok) {
+        document.location.replace('/profile');
+      } else {
+        alert('Failed to delete project. Please try again.');
+      }
+    } catch (err) {
+      console.error('An error occurred:', err);
     }
   }
 };
