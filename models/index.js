@@ -1,13 +1,47 @@
-const User = require('./User');
-const Project = require('./Project');
+const Sequelize = require('sequelize');
+const sequelize = require('./config/connection');
 
-User.hasMany(Project, {
-  foreignKey: 'user_id',
-  onDelete: 'CASCADE'
+// Import models
+const Blog = require('./models/Blog');
+const Post = require('./models/Post');
+const Comment = require('./models/Comment');
+
+// Define associations
+Blog.hasMany(Post, {
+  foreignKey: 'blog_id',
+  onDelete: 'CASCADE',
 });
 
-Project.belongsTo(User, {
-  foreignKey: 'user_id'
+Post.belongsTo(Blog, {
+  foreignKey: 'blog_id',
 });
 
-module.exports = { User, Project };
+Blog.hasMany(Comment, {
+  foreignKey: 'blog_id',
+  onDelete: 'CASCADE',
+});
+
+Comment.belongsTo(Blog, {
+  foreignKey: 'blog_id',
+});
+
+Post.hasMany(Comment, {
+  foreignKey: 'post_id',
+  onDelete: 'CASCADE',
+});
+
+Comment.belongsTo(Post, {
+  foreignKey: 'post_id',
+});
+
+// Sync all models with the database
+sequelize.sync({ force: false }).then(() => {
+  console.log('Database synced!');
+});
+
+// Export models
+module.exports = {
+  Blog,
+  Post,
+  Comment,
+};
