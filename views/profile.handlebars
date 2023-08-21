@@ -1,25 +1,25 @@
 <div class="row">
   <div class="col-auto">
-    <h2>Welcome, {{name}}!</h2>
+    <h2>Welcome, {{username}}!</h2>
   </div>
 </div>
 
 <div class="row mt-4">
   <div class="col-md-6">
-    <h3>Create a New Project:</h3>
+    <h3>Create a New Blog Post:</h3>
 
-    <form class="form new-project-form">
+    <form class="form new-blog-form">
       <div class="form-group">
-        <label for="project-name">project name:</label>
-        <input class="form-input" type="text" id="project-name" name="project-name" />
+        <label for="blog-title">Blog Title:</label>
+        <input class="form-input" type="text" id="blog-title" name="blog-title" />
       </div>
       <div class="form-group">
-        <label for="project-funding">needed funding ($):</label>
-        <input class="form-input" type="number" id="project-funding" name="project-funding" />
+        <label for="blog-tags">Tags:</label>
+        <input class="form-input" type="text" id="blog-tags" name="blog-tags" />
       </div>
       <div class="form-group">
-        <label for="project-desc">description:</label>
-        <textarea class="form-input" id="project-desc" name="project-desc"></textarea>
+        <label for="blog-content">Content:</label>
+        <textarea class="form-input" id="blog-content" name="blog-content"></textarea>
       </div>
       <div class="form-group">
         <button type="submit" class="btn btn-primary">Create</button>
@@ -27,17 +27,17 @@
     </form>
   </div>
 
-  {{#if projects.length}}
-  <div class="col-md-6 project-list">
-    <h3>Current Projects:</h3>
+  {{#if blogPosts.length}}
+  <div class="col-md-6 blog-post-list">
+    <h3>Your Blog Posts:</h3>
 
-    {{#each projects as |project|}}
+    {{#each blogPosts as |post|}}
     <div class="row mb-2">
       <div class="col-md-8">
-        <h4><a href="/project/{{project.id}}">{{project.name}}</a></h4>
+        <h4><a href="/blog/{{post.id}}">{{post.title}}</a></h4>
       </div>
       <div class="col-md-4">
-        <button class="btn btn-sm btn-danger" data-id="{{project.id}}">DELETE</button>
+        <button class="btn btn-sm btn-danger" data-id="{{post.id}}">DELETE</button>
       </div>
     </div>
     {{/each}}
